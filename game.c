@@ -25,13 +25,6 @@ int botaoEsquerdoAnterior = 0;
 int botaoDireitoAnterior = 0;
 int botaoMeioAnterior = 0;
 
-typedef struct
-{
-    int linha;
-    int coluna;
-    int rightClick;
-} InputMouse;
-
 int *monitorarMouse(void *arg)
 {
     int fd;
@@ -74,8 +67,6 @@ int *monitorarMouse(void *arg)
 int main()
 {
     pthread_t threadMouse;
-   
-    InputMouse inputMouse = {2, 2, 0};
 
     if (pthread_create(&threadMouse, NULL, monitorarMouse, NULL))
     {
