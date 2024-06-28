@@ -27,10 +27,10 @@ int botaoMeioAnterior = 0;
 
 typedef struct
 {
-    int pos_X;      // Canto superior esquerdo
+    int pos_X; // Canto superior esquerdo
     int pos_Y;
-    int length;     // Tamanho em pixels
-    int on_screen;  // Está ou não na tela
+    int length;    // Tamanho em pixels
+    int on_screen; // Está ou não na tela
 } ColiderBox;
 
 ColiderBox asteroids[10];
@@ -69,14 +69,14 @@ int *monitorarMouse(void *arg)
 
         mouse_pos_x += mouse_dx;
         mouse_pos_y -= mouse_dy;
-
     }
 
     close(fd);
     return 0;
 }
 
-int check_colision(ColiderBox costant, ColiderBox optional) {
+int check_colision(ColiderBox costant, ColiderBox optional)
+{
     // Calcula as coordenadas dos cantos das caixas
     int left1 = costant.pos_X;
     int right1 = costant.pos_X + costant.length;
@@ -89,7 +89,8 @@ int check_colision(ColiderBox costant, ColiderBox optional) {
     int bottom2 = optional.pos_Y + optional.length;
 
     // Verifica se não há colisão
-    if (bottom1 <= top2 || top1 >= bottom2 || right1 <= left2 || left1 >= right2) {
+    if (bottom1 <= top2 || top1 >= bottom2 || right1 <= left2 || left1 >= right2)
+    {
         return 0;
     }
 
@@ -101,28 +102,47 @@ int main()
 {
     pthread_t threadMouse;
 
+    // Criação da thread para monitorar o mouse 
     if (pthread_create(&threadMouse, NULL, monitorarMouse, NULL))
     {
         fprintf(stderr, "Erro ao criar a thread do mouse\n");
         return 1;
     }
 
-    ColiderBox box1 = {100, 100, 20, 1};
-    ColiderBox box2 = {0, 0, 20, 1};
+    // Inicialização das caixas de colisão
+    ColiderBox meteoro1 = {rand() % 640, 100, 20, 1}; // Meteoro inicial na posição (100, 100)
+    ColiderBox nave = {0, 0, 20, 1};         // Nave na posição inicial (0, 0)
 
+    // Loop principal do programa
     while (1)
     {
-        WBR_S(6, 6, mouse_pos_x, mouse_pos_y, 1);
-        box2.pos_X = mouse_pos_x;
-        box2.pos_Y = mouse_pos_y;
-        
-        WBR_S(1, 1, 100, 100, 1);
-        if (check_colision(box1, box2)) {
+        // Atualiza a posição da nave com a posição do mouse
+        WBR_S(6, 5, mouse_pos_x, mouse_pos_y, 1);
+        nave.pos_X = mouse_pos_x;
+        nave.pos_Y = mouse_pos_y;
+
+        // Movimentação do meteoro
+        if (meteoro1.pos_Y < 480)
+        {                     // Se o meteoro ainda não chegou ao final da tela
+            meteoro1.pos_Y++; // Movimenta o meteoro para baixo
+        }
+        else
+        {                       // Caso contrário
+            meteoro1.pos_Y = 0; // Reinicia o meteoro no topo da tela
+            meteoro1.pos_X = rand() % 640;
+        }
+
+        // Simulação de print do sprite na tela
+        WBR_S(1, 1, meteoro1.pos_X, meteoro1.pos_Y, 1);
+
+        // Verificação de colisão entre nave e meteoro
+        if (check_colision(nave, meteoro1))
+        {
             printf("colidiu");
         };
     }
 
-    pthread_join(threadMouse, NULL);
+    pthread_join(threadMouse, NULL); // Aguarda a thread do mouse encerrar
 
     return 0;
 }

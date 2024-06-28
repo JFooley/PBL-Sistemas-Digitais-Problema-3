@@ -32,14 +32,14 @@ static int dev_open(struct inode *inodep, struct file *filep) {
     }
     device_open++;
     try_module_get(THIS_MODULE);
-    printk(KERN_INFO "Dispositivo aberto com sucesso!\n");
+    // printk(KERN_INFO "Dispositivo aberto com sucesso!\n");
     return 0;
 }
 
 static int dev_release(struct inode *inodep, struct file *filep) {
     device_open--;
     module_put(THIS_MODULE);
-    printk(KERN_INFO "Dispositivo fechado com sucesso!\n");
+    // printk(KERN_INFO "Dispositivo fechado com sucesso!\n");
     return 0;
 }
 
@@ -53,7 +53,7 @@ unsigned long long charArrayToInt(const char *array) {
         result |= ((unsigned long long)(array[i] & 0xFF) << (i * 8));
     }
     
-    printk(KERN_INFO "Array to long: %d\n", result);
+    // printk(KERN_INFO "Array to long: %d\n", result);
 
     return result;
 }
@@ -137,7 +137,7 @@ static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, lof
     memset(buffer, 0, sizeof(buffer));
 
     // Debug
-    printk(KERN_INFO "Dados escritos no dispositivo!\n");
+    // printk(KERN_INFO "Dados escritos no dispositivo!\n");
     return len;
 }
 
@@ -154,7 +154,7 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
         return -EFAULT;
     }
 
-    printk(KERN_INFO "Dados lidos do dispositivo!\n");
+    // printk(KERN_INFO "Dados lidos do dispositivo!\n");
     return len;
 }
 
@@ -181,7 +181,7 @@ static int __init driver_gpu_init(void) {
 
 static void __exit driver_gpu_exit(void) {
     unregister_chrdev(major, DEVICE_NAME);
-    printk(KERN_INFO "Driver removido com sucesso!\n");
+    // printk(KERN_INFO "Driver removido com sucesso!\n");
 }
 
 module_init(driver_gpu_init);
