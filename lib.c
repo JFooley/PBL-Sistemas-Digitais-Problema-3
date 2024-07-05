@@ -13,7 +13,7 @@ int simple_driver_open() {
         perror("Falha ao abrir o dispositivo");
         return -1;
     }
-    printf("Dispositivo aberto com sucesso!\n");
+    // printf("Dispositivo aberto com sucesso!\n");
     return fd;
 }
 
@@ -23,7 +23,7 @@ int simple_driver_close(int fd) {
         perror("Falha ao fechar o dispositivo");
         return -1;
     }
-    printf("Dispositivo fechado com sucesso!\n");
+    // printf("Dispositivo fechado com sucesso!\n");
     return 0;
 }
 
