@@ -18,6 +18,10 @@ int botaoEsquerdo = 0;
 int botaoDireito = 0;
 int botaoMeio = 0;
 
+// Nave mãe
+int vida = 200;
+
+
 // Variáveis globais para armazenar os valores anteriores de movimento e cliques do mouse
 int dxAnterior = 0;
 int dyAnterior = 0;
@@ -31,7 +35,9 @@ typedef struct
     int pos_Y;
     int length;    // Tamanho em pixels
     int on_screen; // Está ou não na tela
-    int velocidade;
+    int velocidade; // Em pixels
+    int registrador;
+    int offset; // Qual sprite é
 } ColiderBox;
 
 ColiderBox asteroids[10];
@@ -116,35 +122,71 @@ int main()
     }
 
     // Inicialização das caixas de colisão
-    ColiderBox meteoro1 = {rand() % 640, 100, 20, 1, 1}; // Meteoro inicial na posição (100, 100)
-    // ColiderBox meteoro2 = {rand() % 640, 100, 20, 1, 4}; // Meteoro inicial na posição (100, 100)
-    // ColiderBox meteoro3 = {rand() % 640, 100, 20, 1, 7}; // Meteoro inicial na posição (100, 100)
+    ColiderBox meteoro1 = {rand() % 640, 0, 20, 1, 1, 5, 1};
+    ColiderBox meteoro2 = {rand() % 640, 0, 20, 1, 2, 3, 2};
+    ColiderBox meteoro3 = {rand() % 640, 0, 20, 1, 3, 4, 3};
 
-    ColiderBox nave = {mouse_pos_x, mouse_pos_y, 20, 1}; // Nave na posição inicial (0, 0)
+    ColiderBox nave = {mouse_pos_x, 400, 20, 1}; // Nave na posição inicial (0, 0)
+
+    ColiderBox tiro = {mouse_pos_x, mouse_pos_y, 20, 0, 8, 2, 11}; // posiao inical
+
+    WBR_BG(0, 0, 0);
 
     // Adiciona o meteoro na lista;
     asteroids[0] = meteoro1;
-    // asteroids[1] = meteoro2;
-    // asteroids[2] = meteoro3;
-    int quantidadeMeteoros = 1; // Tamanho atual do vetor asteroids
+    asteroids[1] = meteoro2;
+    asteroids[2] = meteoro3;
+    int quantidadeMeteoros = 3; // Tamanho atual do vetor asteroids
+
+    // Imprimir os valores de cada elemento da lista asteroids
+
+    // Imprimir o tamanho da lista asteroids
+    printf("Tamanho da lista asteroids: %lu\n", sizeof(asteroids) / sizeof(asteroids[0]));
 
     int contador = 0;
     // Loop principal do programa
     while (1)
     {
-        // Atualiza a posição da nave com a posição da struct da nave
-        WBR_S(6, 5, nave.pos_X, nave.pos_Y, 1);
+        // Renderização da nave e tiro
+        WBR_S(tiro.registrador, tiro.offset, tiro.pos_X, tiro.pos_Y, tiro.on_screen);
+        WBR_S(1, 5, nave.pos_X, nave.pos_Y, 1);
         nave.pos_X = mouse_pos_x;
-        nave.pos_Y = mouse_pos_y;
+        // nave.pos_Y = mouse_pos_y;
 
-        // Movimentação do meteoro
+        // Verifica input de tiro
+        if (botaoEsquerdo != botaoEsquerdoAnterior)
+        {
+            if (botaoEsquerdo & 0x01)
+            {
+                // Adicionar o tiro: Se não tiver na tela
+                if (tiro.on_screen == 0)
+                {
+                    tiro.on_screen = 1;
+                    tiro.pos_X = nave.pos_X;
+                    tiro.pos_Y = nave.pos_Y - 20;
+                }
+            }
+        }
+
+        // Movimentação do meteoro e tiro
         int i;
         if (contador % 3 == 0)
         {
+            // Movimenta o tiro na tela
+            if (tiro.on_screen)
+            { 
+                if (tiro.pos_Y < 0)
+                {
+                    tiro.on_screen = 0;
+                }
 
+                tiro.pos_Y = tiro.pos_Y - tiro.velocidade;
+            }
+
+            // Movimenta os meteoros na tela
             for (i = 0; i < quantidadeMeteoros; i++)
             {
-                if (asteroids[i].pos_Y < 480)
+                if (asteroids[i].pos_Y < 480 && asteroids[i].on_screen)
                 {
                     asteroids[i].pos_Y = asteroids[i].pos_Y + asteroids[i].velocidade; // Movimenta o meteoro para baixo
                 }
@@ -152,36 +194,45 @@ int main()
                 {
                     asteroids[i].pos_Y = 0; // Reinicia o meteoro no topo da tela
                     asteroids[i].pos_X = rand() % 640;
-                    // ADICIONAR LOGICA DFA VIDA
+
+                    printf("vida: %d\n", vida);
+                    if (vida > 0 && asteroids[i].on_screen)
+                    {
+                        vida--;
+                    }
+                    else
+                    {
+                        printf("GAME OVER 2\n");
+                    }
                 }
             }
         }
 
-        if ((contador % 500 == 0) && (quantidadeMeteoros < 3))
-        {
+        // Colisão e spawn de metoros
+        for (i = 0; i < quantidadeMeteoros; i++) {
+            WBR_S(asteroids[i].registrador, asteroids[i].offset, asteroids[i].pos_X, asteroids[i].pos_Y, asteroids[i].on_screen);
 
-            for (i = 0; i < quantidadeMeteoros; i++)
-            {
-                if (asteroids[i].on_screen == 0)
-                {
-                    asteroids[i].on_screen = 1;
-                }
+            // Spawner
+            if (asteroids[i].on_screen == 0 && contador == 0) {
+                asteroids[i].on_screen = 1;
             }
-        }
-
-        for (i = 0; i < quantidadeMeteoros; i++)
-        {
-            // Simulação de print do sprite na tela
-            // TEM QUE ALTERAR O REGISTRADOR
-            WBR_S(1, 1, asteroids[i].pos_X, asteroids[i].pos_Y, asteroids[i].on_screen);
-
-            // Verificação de colisão entre nave e meteoro
+            // Colisão entre nave e meteoro
             if (check_colision(nave, asteroids[i]))
             {
-                // ADICIONAR LOGICA DFA VIDA
                 asteroids[i].on_screen = 0;
-                quantidadeMeteoros--;
-                printf("colidiu\n");
+                vida = 0;
+
+                printf("vida: %d\n", vida);
+                printf("GAME OVER 1\n");
+            };
+
+            // Colisão tiro e meteoro
+            if (check_colision(tiro, asteroids[i]))
+            {
+                asteroids[i].on_screen = 0;
+                asteroids[i].pos_Y = 0;
+
+                tiro.on_screen = 0;
             };
         }
 
