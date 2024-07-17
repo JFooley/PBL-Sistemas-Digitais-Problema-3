@@ -21,7 +21,6 @@ int botaoMeio = 0;
 // Nave mãe
 int vida = 200;
 
-
 // Variáveis globais para armazenar os valores anteriores de movimento e cliques do mouse
 int dxAnterior = 0;
 int dyAnterior = 0;

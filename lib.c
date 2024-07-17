@@ -87,18 +87,20 @@ static void WBR_S(unsigned long long reg, unsigned long long offset, unsigned lo
     word |= ((unsigned long long)reg & REG_MASK) << 4;
 
     word |= ((unsigned long long)offset & OFFSET_MASK) << 9;
-    word |= ((unsigned long long)Y & 0b111111111) << 18;
-    word |= ((unsigned long long)X & 0b111111111) << 28;
-    word |= ((unsigned long long)onScreen & 0b1) << 38;
+    word |= ((unsigned long long)Y & 0b1111111111) << 19;
+    word |= ((unsigned long long)X & 0b1111111111) << 29;
+    word |= ((unsigned long long)onScreen & 0b1) << 39;
 
     fileWriter(word);
 }
 
-static void WSM(unsigned long long reg, unsigned long long pixel, unsigned long long R, unsigned long long G, unsigned long long B) {
+static void WSM(unsigned long long sprite_index, unsigned long long pixel_index, unsigned long long R, unsigned long long G, unsigned long long B) {
     unsigned long long word = 0;
     unsigned long long mem_address;
 
-    mem_address = (reg * 400) + pixel;
+    if (pixel_index >= 380) pixel_index = 379;
+
+    mem_address = (sprite_index * 400 + 20) + pixel_index;
 
     word |= ((unsigned long long)WSM_OPCODE & OPCODE_MASK) << 0;
     word |= ((unsigned long long)mem_address & SMEN_OFFSET_MASK) << 4;
