@@ -58,34 +58,16 @@ unsigned long long charArrayToInt(const char *array) {
     return result;
 }
 
-void printBinaryArray(const unsigned char *array) {
-    printk(KERN_INFO "Array na lib:\n");
-
-    int i, j;
-    for (i = 7; i >= 0; i--) {  // Invertendo a ordem dos bytes
-        for (j = 7; j >= 0; j--) {
-            printk(KERN_INFO "%d", (array[i] >> j) & 1);
-        }
-        printk(KERN_INFO " ");
-    }
-    printk(KERN_INFO "\n");
-}
-
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset) {
 
     // Copiar os dados do buffer do usuário para o buffer do dispositivo
     if (copy_from_user(device_buffer, buffer, len) != 0) {
-        printk(KERN_ERR "Falha ao copiar dados do buffer de usuário para o buffer do dispositivo\n");
+        // printk(KERN_ERR "Falha ao copiar dados do buffer de usuário para o buffer do dispositivo\n");
         return -EFAULT;
-    }    
-   	
-    printk(KERN_INFO "\n");
-    printk(KERN_INFO "\n");
+    }
 
     // Recuper a instrucao
     unsigned long long word = charArrayToInt(device_buffer);
-    printBinaryArray(device_buffer);
-
     pointer_dataA = (volatile long long *)(pointer_bridge + DATA_A);
     pointer_dataB = (volatile long long *)(pointer_bridge + DATA_B);
     pointer_START = (volatile long long *)(pointer_bridge + START);
@@ -117,7 +99,7 @@ static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, lof
         break;
 
     default:
-        printk(KERN_ERR "kernelcjjg: Instrução não reoconhecida");
+        // printk(KERN_ERR "kernelcjjg: Instrução não reoconhecida");
         break;
     }
 
@@ -144,13 +126,13 @@ static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, lof
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset) {
     // Verificar se o tamanho do buffer de saída é o esperado
     if (len != sizeof(device_buffer)) {
-        printk(KERN_ERR "Tamanho do buffer de saída incorreto\n");
+        // printk(KERN_ERR "Tamanho do buffer de saída incorreto\n");
         return -EINVAL;
     }
 
     // Copiar os dados do buffer do dispositivo para o buffer do usuário
     if (copy_to_user(buffer, device_buffer, len) != 0) {
-        printk(KERN_ERR "Falha ao copiar dados do buffer do dispositivo para o buffer do usuário\n");
+        // printk(KERN_ERR "Falha ao copiar dados do buffer do dispositivo para o buffer do usuário\n");
         return -EFAULT;
     }
 
@@ -168,7 +150,7 @@ static struct file_operations fops = {
 static int __init driver_gpu_init(void) {
     major = register_chrdev(0, DEVICE_NAME, &fops);
     if (major < 0) {
-        printk(KERN_ALERT "Falha ao registrar o dispositivo com o número major %d\n", major);
+        // printk(KERN_ALERT "Falha ao registrar o dispositivo com o número major %d\n", major);
         return major;
     }
     printk(KERN_INFO "Dispositivo registrado com sucesso com o número major %d. Para interagir com o driver, crie um arquivo de dispositivo com 'mknod /dev/%s c %d 0'.\n", major, DEVICE_NAME, major);
