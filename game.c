@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <pthread.h>
 #include "lib.c"
+#include "visuais.c"
 
 // Dimensões da tela em blocos
 #define BACKGROUND_WIDTH 80
@@ -51,29 +52,6 @@ ColiderBox asteroids[10];
 ColiderBox blasts[3];
 ColiderBox nave;
 
-void limpar_sprites()
-{
-
-    WBR_BG(0, 0, 0);
-    WBR_S(1, 0, 0, 0, 0);
-    WBR_S(2, 0, 0, 0, 0);
-    WBR_S(3, 0, 0, 0, 0);
-    WBR_S(4, 0, 0, 0, 0);
-    WBR_S(5, 0, 0, 0, 0);
-    WBR_S(6, 0, 0, 0, 0);
-    WBR_S(7, 0, 0, 0, 0);
-    WBR_S(8, 0, 0, 0, 0);
-    WBR_S(9, 0, 0, 0, 0);
-    WBR_S(10, 0, 0, 0, 0);
-}
-
-void limpa_background() {
-    int i;
-    for (i = 0; i < 4800; i++) {
-        WBM(i, 7, 7, 7);
-    }
-}
-
 // Função para desenhar uma matriz de caracteres na tela
 void draw_text(int start_col, int start_row, const char** text, int height, int width, unsigned long long R, unsigned long long G, unsigned long long B) {
     int row, col;
@@ -97,13 +75,12 @@ void draw_text(int start_col, int start_row, const char** text, int height, int 
     }
 }
 
-
 // Exemplo de uso da função para desenhar "GAME" e "OVER"
 void draw_game_over(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
     // Matriz de caracteres para "GAME" e "OVER"
     const char* game[] = {
-        "  GGG   A   M   M EEEEE  ",
-        " G     A A  MM MM E      ",
+        "  GGG   AAA  M   M EEEEE  ",
+        " G     A   A MM MM E      ",
         " G  GG AAAAA M M M EEEE   ",
         " G   G A   A M   M E      ",
         "  GGG  A   A M   M EEEEE  "
@@ -130,6 +107,24 @@ void draw_game_over(int start_col, int start_row, unsigned long long R, unsigned
     draw_text(start_col + game_width + 1, start_row + 10, over, over_height, over_width, R, G, B);
 }
 
+void draw_pause(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
+    // Matriz de caracteres para "PAUSE"
+    const char* pause[] = {
+        " PPPP AAAAA U   U SSSSS EEEEE",
+        " P  P A   A U   U S     E    ",
+        " PPPP AAAAA U   U SSSSS EEEEE",
+        " P    A   A U   U     S E    ",
+        " P    A   A UUUUU SSSSS EEEEE"
+    };
+
+    // Altura e largura das palavras "PAUSE"
+    int pause_height = 5; // número de linhas na matriz "PAUSE"
+    int pause_width = 29; // comprimento da linha mais longa na matriz "PAUSE"
+
+    // Desenha "PAUSE" na tela
+    draw_text(start_col, start_row, pause, pause_height, pause_width, R, G, B);
+}
+
 
 //////////////////////////////////////////////////////////
 //JOGO AQUI
@@ -146,8 +141,6 @@ int *monitorarMouse(void *arg)
         perror("Erro ao abrir o dispositivo do mouse");
         return 1;
     }
-
-    WBR_BG(7, 7, 7);
 
     while (1)
     {
@@ -198,11 +191,10 @@ int check_colision(ColiderBox costant, ColiderBox optional)
     }
 
     return 0;
-};
+};  
 
 int main()
 {
-    limpa_background();
     pthread_t threadMouse;
 
     // Criação da thread para monitorar o mouse
@@ -212,16 +204,27 @@ int main()
         return 1;
     }
 
+    // int pos_X; // Canto superior esquerdo
+    // int pos_Y;
+    // int length;     // Tamanho em pixels
+    // int on_screen;  // Está ou não na tela
+    // int velocidade; // Em pixels
+    // int registrador;
+    // int offset; // Qual sprite é
+
     // Inicialização das caixas de colisão
-    ColiderBox meteoro1 = {rand() % 640, 0, 20, 1, 1, 5, 1};
-    ColiderBox meteoro2 = {rand() % 640, 0, 20, 1, 2, 3, 2};
-    ColiderBox meteoro3 = {rand() % 640, 0, 20, 1, 3, 4, 3};
+    ColiderBox nave = {mouse_pos_x, 400, 20, 1, 0, 1, 1}; // Nave na posição inicial (0, 0)
+    ColiderBox tiro = {mouse_pos_x, mouse_pos_y, 20, 0, 8, 2, 2}; // posiao inical
+    ColiderBox meteoro1 = {rand() % 640, 0, 20, 1, 1, 3, 3};
+    ColiderBox meteoro2 = {rand() % 640, 0, 20, 1, 2, 4, 4};
+    ColiderBox meteoro3 = {rand() % 640, 0, 20, 1, 3, 5, 5};
 
-    ColiderBox nave = {mouse_pos_x, 400, 20, 1}; // Nave na posição inicial (0, 0)
-
-    ColiderBox tiro = {mouse_pos_x, mouse_pos_y, 20, 0, 8, 2, 11}; // posiao inical
-
-    WBR_BG(7, 7, 7);
+    // Load visuais
+    clear_smemory();
+    limpa_background();
+    load_nave();
+    load_tiro();
+    load_meteoros();
 
     // Adiciona o meteoro na lista;
     asteroids[0] = meteoro1;
@@ -236,6 +239,11 @@ int main()
 
     int jogoPausado = 0;
     int contador = 0;
+
+    limpa_background();
+    WBR_BG(0, 0, 0);
+    draw_ongame_background();
+
     // Loop principal do programa
     while (1)
     {
@@ -243,7 +251,7 @@ int main()
         {
             // Renderização da nave e tiro
             WBR_S(tiro.registrador, tiro.offset, tiro.pos_X, tiro.pos_Y, tiro.on_screen);
-            WBR_S(1, 5, nave.pos_X, nave.pos_Y, 1);
+            WBR_S(nave.registrador, nave.offset, nave.pos_X, nave.pos_Y, 1);
             nave.pos_X = mouse_pos_x;
             // nave.pos_Y = mouse_pos_y;
 
@@ -252,9 +260,9 @@ int main()
             {
                 nave.pos_X = 0;
             }
-            else if (nave.pos_X > 600)
+            else if (nave.pos_X > 620)
             {
-                nave.pos_X = 600;
+                nave.pos_X = 620;
             }
 
             // Verifica input de tiro
@@ -353,25 +361,28 @@ int main()
         if (!jogoPausado && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
         {
             jogoPausado = 1;
-            sleep(1);
+
             //>>>>>>>>>>>>>CHAMAR A ARTE DE PAUSAR O GAME AQUI<<<<<<<
+            draw_pause(0, 23, 7, 0, 0);
+            sleep(1);
         }
         else if (jogoPausado && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
         {
-            jogoPausado = 0;
-            sleep(1);
-            //>>>>>>>>>>>>>CHAMAR A ARTE DE TIRAR PAUSE O GAME AQUI<<<<<<<
-        }
+            jogoPausado = 0;            
 
-        if (vida == 0)
-        {
+            //>>>>>>>>>>>>>CHAMAR A ARTE DE TIRAR PAUSE O GAME AQUI<<<<<<<
+            limpa_background();
+            draw_ongame_background();
+            // sleep(1);
+        }   
+
+        if (vida == 0) {
             limpar_sprites();
             limpa_background();
             draw_game_over(10, 23, 7, 0, 0);
 
             while (1)
             {
-
                 if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
                 {
                     sleep(1);
@@ -388,10 +399,10 @@ int main()
                     }
 
                     limpa_background();
-                    WBR_BG(7, 7, 7);
                     break;
                 }
             }
+            draw_ongame_background();
         }
     }
 

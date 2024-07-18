@@ -112,6 +112,19 @@ static void WSM(unsigned long long sprite_index, unsigned long long pixel_index,
     fileWriter(word);
 }
 
+static void WSM_RAW(unsigned long long mem_address, unsigned long long R, unsigned long long G, unsigned long long B) {
+    unsigned long long word = 0;
+
+    word |= ((unsigned long long)WSM_OPCODE & OPCODE_MASK) << 0;
+    word |= ((unsigned long long)mem_address & SMEN_OFFSET_MASK) << 4;
+
+    word |= ((unsigned long long)R & 0b111) << 18;
+    word |= ((unsigned long long)G & 0b111) << 21;
+    word |= ((unsigned long long)B & 0b111) << 24; 
+
+    fileWriter(word);
+}
+
 static void WBM(unsigned long long mem_address, unsigned long long R, unsigned long long G, unsigned long long B) {
     unsigned long long word = 0;
 

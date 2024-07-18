@@ -1,14 +1,9 @@
 #include "lib.c"
+#include "visuais.c"
 #include <stdio.h>
 
-// Dimensões da tela em blocos
-#define BACKGROUND_WIDTH 80
-#define BACKGROUND_HEIGHT 60
-#define SCREEN_WIDTH 640
-#define SCREEN_HEIGHT 480
-
 void main(){
-    WBR_BG(0, 0, 0);
+    clear_smemory();
 
     int j;
     for (j = 0; j < 380; j++) {
