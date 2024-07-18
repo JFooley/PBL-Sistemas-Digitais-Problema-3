@@ -87,9 +87,9 @@ static void WBR_S(unsigned long long reg, unsigned long long offset, unsigned lo
     word |= ((unsigned long long)reg & REG_MASK) << 4;
 
     word |= ((unsigned long long)offset & OFFSET_MASK) << 9;
-    word |= ((unsigned long long)Y & 0b1111111111) << 19;
-    word |= ((unsigned long long)X & 0b1111111111) << 29;
-    word |= ((unsigned long long)onScreen & 0b1) << 39;
+    word |= ((unsigned long long)Y & 0b1111111111) << 18;
+    word |= ((unsigned long long)X & 0b1111111111) << 28;
+    word |= ((unsigned long long)onScreen & 0b1) << 38;
 
     fileWriter(word);
 }
