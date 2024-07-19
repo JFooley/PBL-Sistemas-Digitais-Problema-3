@@ -38,6 +38,9 @@ const int valorMaxVida = 4;
 // Nave mãe
 int vida = 4;
 
+// Pontuação
+int pontos = 0;
+
 // Variáveis globais para armazenar os valores anteriores de movimento e cliques do mouse
 int dxAnterior = 0;
 int dyAnterior = 0;
@@ -131,7 +134,11 @@ int main()
 {
     pthread_t threadMouse;
     printf("VIda agora: %d", vida);
+    //Deixa um 0 no display de 7 seguimentos referente ao campo de dezena do campo da vida
     ligar_7seg(vida, 0);
+    //Deixa um 0 no display de 7 seguimentos referente ao campo de dezena do campo da vida
+    ligar_7seg(10, 2);
+    ligar_7seg(10, 3);
     // Criação da thread para monitorar o mouse
     if (pthread_create(&threadMouse, NULL, monitorarMouse, NULL))
     {
@@ -280,6 +287,21 @@ int main()
                     asteroids[i].pos_Y = 0;
 
                     tiro.on_screen = 0;
+                    ++pontos;
+                    printf("Pontos: %d", pontos);
+
+                    if (pontos < 10){
+                        ligar_7seg(pontos, 4);
+                        printf("Menor que 10: %d\n", pontos);
+                    }
+                    else{
+                        int dig1;
+                        int dig2;
+                        dig1 = pontos / 10;
+                        dig2 = pontos % 10;
+                        ligar_7seg(dig1, 5);
+                        ligar_7seg(dig2, 4);
+                    }
                 };
             }
 
@@ -303,6 +325,7 @@ int main()
                         vida = valorMaxVida;
                         nave.pos_X = posicaoXCentral;
                         nave.on_screen = 1;
+                        pontos = 0;
 
                         int i;
                         for (i = 0; i < quantidadeMeteoros; i++)
