@@ -6,6 +6,7 @@
 #include <pthread.h>
 #include "lib.c"
 #include "visuais.c"
+#include "sete_seg.c"
 
 // Dimensões da tela em blocos
 #define BACKGROUND_WIDTH 80
@@ -32,10 +33,10 @@ int botaoDireito = 0;
 int botaoMeio = 0;
 
 const int posicaoXCentral = 240;
-const int valorMaxVida = 10;
+const int valorMaxVida = 4;
 
 // Nave mãe
-int vida = 10;
+int vida = 4;
 
 // Variáveis globais para armazenar os valores anteriores de movimento e cliques do mouse
 int dxAnterior = 0;
@@ -129,7 +130,8 @@ int check_colision(ColiderBox costant, ColiderBox optional)
 int main()
 {
     pthread_t threadMouse;
-
+    printf("VIda agora: %d", vida);
+    ligar_7seg(vida, 0);
     // Criação da thread para monitorar o mouse
     if (pthread_create(&threadMouse, NULL, monitorarMouse, NULL))
     {
@@ -160,6 +162,7 @@ int main()
     int contador = 0;
 
     limpa_background();
+    limpar_sprites();
     WBR_BG(0, 0, 0);
     draw_mainmenu();
 
@@ -238,6 +241,8 @@ int main()
                         if (vida > 0 && asteroids[i].on_screen)
                         {
                             vida--;
+                            ligar_7seg(vida, 0);
+                            draw_earth_damage(vida);
                         }
                         else if (vida == 0)
                         {
@@ -263,6 +268,7 @@ int main()
 
                     asteroids[i].on_screen = 0;
                     vida = 0;
+                    ligar_7seg(vida, 0);
                     // printf("vida: %d\n", vida);
                     printf("GAME OVER NAVE ATINGIDA\n");
                 };
@@ -287,7 +293,7 @@ int main()
             if (vida == 0) {
                 limpar_sprites();
                 limpa_background();
-                draw_game_over(10, 23, 7, 0, 0);
+                draw_gameover();
 
                 while (1)
                 {
@@ -305,8 +311,6 @@ int main()
                             asteroids[i].on_screen = 1;
                             asteroids[i].pos_X = rand() % 640;
                         }
-
-                        limpa_background();
                         break;
                     }
                 }
