@@ -137,14 +137,6 @@ int main()
         return 1;
     }
 
-    // int pos_X; // Canto superior esquerdo
-    // int pos_Y;
-    // int length;     // Tamanho em pixels
-    // int on_screen;  // Está ou não na tela
-    // int velocidade; // Em pixels
-    // int registrador;
-    // int offset; // Qual sprite é
-
     // Inicialização das caixas de colisão
     ColiderBox nave = {mouse_pos_x, 400, 20, 1, 0, 1, 1}; // Nave na posição inicial (0, 0)
     ColiderBox tiro = {mouse_pos_x, mouse_pos_y, 20, 0, 8, 2, 2}; // posiao inical
@@ -165,11 +157,6 @@ int main()
     asteroids[2] = meteoro3;
     int quantidadeMeteoros = 3; // Tamanho atual do vetor asteroids
 
-    // Imprimir os valores de cada elemento da lista asteroids
-
-    // Imprimir o tamanho da lista asteroids
-    // printf("Tamanho da lista asteroids: %lu\n", sizeof(asteroids) / sizeof(asteroids[0]));
-
     int contador = 0;
 
     limpa_background();
@@ -181,7 +168,7 @@ int main()
     {
         // Menu principal
         if (game_state == MENU){
-            if (botaoEsquerdo != botaoEsquerdoAnterior && botaoEsquerdo & 0x01) {
+            if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02)) {
                 game_state = PLAYING;
                 draw_ongame_background();
             }
@@ -329,9 +316,8 @@ int main()
         }
 
         // Pausa
-            if (game_state == PLAYING && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
-        {
-            game_state == PAUSE;
+        if (game_state == PLAYING && (botaoDireito != botaoDireitoAnterior && (botaoDireito & 0x02))) {
+            game_state = PAUSE;
 
             //>>>>>>>>>>>>>CHAMAR A ARTE DE PAUSAR O GAME AQUI<<<<<<<
             draw_pause(0, 23, 7, 0, 0);
@@ -339,9 +325,9 @@ int main()
         }
 
         // Tira o pause
-        else if (game_state == PAUSE && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
+        else if (game_state == PAUSE && (botaoDireito != botaoDireitoAnterior && (botaoDireito & 0x02)))
         {
-            game_state == PLAYING;            
+            game_state = PLAYING;            
 
             //>>>>>>>>>>>>>CHAMAR A ARTE DE TIRAR PAUSE O GAME AQUI<<<<<<<
             limpa_background();
