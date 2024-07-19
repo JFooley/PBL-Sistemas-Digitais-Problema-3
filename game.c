@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-
 #include <fcntl.h>
 #include <pthread.h>
 #include "lib.c"
@@ -13,6 +12,13 @@
 #define BACKGROUND_HEIGHT 60
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
+
+// Estados do jogo
+#define MENU 0
+#define PLAYING 1
+#define PAUSE 2
+
+game_state = MENU;
 
 // Posição do mouse
 int mouse_pos_x = 240;
@@ -27,6 +33,7 @@ int botaoMeio = 0;
 
 const int posicaoXCentral = 240;
 const int valorMaxVida = 10;
+
 // Nave mãe
 int vida = 10;
 
@@ -51,80 +58,6 @@ typedef struct
 ColiderBox asteroids[10];
 ColiderBox blasts[3];
 ColiderBox nave;
-
-// Função para desenhar uma matriz de caracteres na tela
-void draw_text(int start_col, int start_row, const char** text, int height, int width, unsigned long long R, unsigned long long G, unsigned long long B) {
-    int row, col;
-    unsigned long long mem_address;
-
-    // Desenha o texto na tela
-    for (row = 0; row < height; row++) {
-        for (col = 0; col < width; col++) {
-            // Calcula o endereço de memória para cada posição na tela
-            mem_address = (((start_row + row) * BACKGROUND_WIDTH) + (start_col + col));
-
-            // Verifica se estamos dentro dos limites da tela
-            if (mem_address < BACKGROUND_WIDTH * BACKGROUND_HEIGHT) {
-                // Verifica se o caractere na matriz não é um espaço em branco ou caractere não imprimível
-                if (text[row][col] != ' ' && text[row][col] != '\0') {
-                    // Desenha o caractere na tela usando a função WBM
-                    WBM(mem_address, R, G, B);
-                }
-            }
-        }
-    }
-}
-
-// Exemplo de uso da função para desenhar "GAME" e "OVER"
-void draw_game_over(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
-    // Matriz de caracteres para "GAME" e "OVER"
-    const char* game[] = {
-        "  GGG   AAA  M   M EEEEE  ",
-        " G     A   A MM MM E      ",
-        " G  GG AAAAA M M M EEEE   ",
-        " G   G A   A M   M E      ",
-        "  GGG  A   A M   M EEEEE  "
-    };
-
-    const char* over[] = {
-        " OOO  V   V EEEE RRR ",
-        "O   O V   V E    R  R",
-        "O   O V   V EEE  RRR ",
-        "O   O  V V  E    R R ",
-        " OOO    V   EEEE R  RR"
-    };
-
-    // Altura e largura das palavras "GAME" e "OVER"
-    int game_height = 5; // número de linhas na matriz "GAME"
-    int game_width = 25; // comprimento da linha mais longa na matriz "GAME"
-    int over_height = 5; // número de linhas na matriz "OVER"
-    int over_width = 25; // comprimento da linha mais longa na matriz "OVER"
-
-    // Desenha "GAME" na tela
-    draw_text(start_col, start_row, game, game_height, game_width, R, G, B);
-
-    // Desenha "OVER" na tela, começando logo após "GAME"
-    draw_text(start_col + game_width + 1, start_row + 10, over, over_height, over_width, R, G, B);
-}
-
-void draw_pause(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
-    // Matriz de caracteres para "PAUSE"
-    const char* pause[] = {
-        " PPPP AAAAA U   U SSSSS EEEEE",
-        " P  P A   A U   U S     E    ",
-        " PPPP AAAAA U   U SSSSS EEEEE",
-        " P    A   A U   U     S E    ",
-        " P    A   A UUUUU SSSSS EEEEE"
-    };
-
-    // Altura e largura das palavras "PAUSE"
-    int pause_height = 5; // número de linhas na matriz "PAUSE"
-    int pause_width = 29; // comprimento da linha mais longa na matriz "PAUSE"
-
-    // Desenha "PAUSE" na tela
-    draw_text(start_col, start_row, pause, pause_height, pause_width, R, G, B);
-}
-
 
 //////////////////////////////////////////////////////////
 //JOGO AQUI
@@ -237,23 +170,30 @@ int main()
     // Imprimir o tamanho da lista asteroids
     // printf("Tamanho da lista asteroids: %lu\n", sizeof(asteroids) / sizeof(asteroids[0]));
 
-    int jogoPausado = 0;
     int contador = 0;
 
     limpa_background();
     WBR_BG(0, 0, 0);
-    draw_ongame_background();
+    draw_mainmenu();
 
     // Loop principal do programa
     while (1)
     {
-        if (!jogoPausado)
+        // Menu principal
+        if (game_state == MENU){
+            if (botaoEsquerdo != botaoEsquerdoAnterior && botaoEsquerdo & 0x01) {
+                game_state = PLAYING;
+                draw_ongame_background();
+            }
+        }
+
+        // Jogando
+        else if (game_state == PLAYING)
         {
             // Renderização da nave e tiro
             WBR_S(tiro.registrador, tiro.offset, tiro.pos_X, tiro.pos_Y, tiro.on_screen);
             WBR_S(nave.registrador, nave.offset, nave.pos_X, nave.pos_Y, 1);
             nave.pos_X = mouse_pos_x;
-            // nave.pos_Y = mouse_pos_y;
 
             // Limita a posição da nave no eixo X entre 0 e 680 pixels
             if (nave.pos_X < 0)
@@ -355,55 +295,59 @@ int main()
             {
                 contador = 0;
             }
+
+            // Gameover  
+            if (vida == 0) {
+                limpar_sprites();
+                limpa_background();
+                draw_game_over(10, 23, 7, 0, 0);
+
+                while (1)
+                {
+                    if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
+                    {
+                        sleep(1);
+                        vida = valorMaxVida;
+                        nave.pos_X = posicaoXCentral;
+                        nave.on_screen = 1;
+
+                        int i;
+                        for (i = 0; i < quantidadeMeteoros; i++)
+                        {
+                            asteroids[i].pos_Y = 0;
+                            asteroids[i].on_screen = 1;
+                            asteroids[i].pos_X = rand() % 640;
+                        }
+
+                        limpa_background();
+                        break;
+                    }
+                }
+                game_state = MENU;
+                draw_mainmenu();
+            }
         }
 
-        // Verifica se a tecla 'P' foi pressionada para pausar o jogo
-        if (!jogoPausado && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
+        // Pausa
+            if (game_state == PLAYING && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
         {
-            jogoPausado = 1;
+            game_state == PAUSE;
 
             //>>>>>>>>>>>>>CHAMAR A ARTE DE PAUSAR O GAME AQUI<<<<<<<
             draw_pause(0, 23, 7, 0, 0);
             sleep(1);
         }
-        else if (jogoPausado && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
+
+        // Tira o pause
+        else if (game_state == PAUSE && (botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
         {
-            jogoPausado = 0;            
+            game_state == PLAYING;            
 
             //>>>>>>>>>>>>>CHAMAR A ARTE DE TIRAR PAUSE O GAME AQUI<<<<<<<
             limpa_background();
             draw_ongame_background();
-            // sleep(1);
         }   
 
-        if (vida == 0) {
-            limpar_sprites();
-            limpa_background();
-            draw_game_over(10, 23, 7, 0, 0);
-
-            while (1)
-            {
-                if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
-                {
-                    sleep(1);
-                    vida = valorMaxVida;
-                    nave.pos_X = posicaoXCentral;
-                    nave.on_screen = 1;
-
-                    int i;
-                    for (i = 0; i < quantidadeMeteoros; i++)
-                    {
-                        asteroids[i].pos_Y = 0;
-                        asteroids[i].on_screen = 1;
-                        asteroids[i].pos_X = rand() % 640;
-                    }
-
-                    limpa_background();
-                    break;
-                }
-            }
-            draw_ongame_background();
-        }
     }
 
     pthread_join(threadMouse, NULL); // Aguarda a thread do mouse encerrar

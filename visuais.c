@@ -1,3 +1,9 @@
+// Dimensões da tela em blocos
+#define BACKGROUND_WIDTH 80
+#define BACKGROUND_HEIGHT 60
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
+
 void limpar_sprites()
 {
     WBR_BG(0, 0, 0);
@@ -36,6 +42,79 @@ void fill_background(int R, int G, int B)
     {
         WBM(i, R, G, B);
     }
+}
+
+// Função para desenhar uma matriz de caracteres na tela
+void draw_text(int start_col, int start_row, const char** text, int height, int width, unsigned long long R, unsigned long long G, unsigned long long B) {
+    int row, col;
+    unsigned long long mem_address;
+
+    // Desenha o texto na tela
+    for (row = 0; row < height; row++) {
+        for (col = 0; col < width; col++) {
+            // Calcula o endereço de memória para cada posição na tela
+            mem_address = (((start_row + row) * BACKGROUND_WIDTH) + (start_col + col));
+
+            // Verifica se estamos dentro dos limites da tela
+            if (mem_address < BACKGROUND_WIDTH * BACKGROUND_HEIGHT) {
+                // Verifica se o caractere na matriz não é um espaço em branco ou caractere não imprimível
+                if (text[row][col] != ' ' && text[row][col] != '\0') {
+                    // Desenha o caractere na tela usando a função WBM
+                    WBM(mem_address, R, G, B);
+                }
+            }
+        }
+    }
+}
+
+// Exemplo de uso da função para desenhar "GAME" e "OVER"
+void draw_game_over(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
+    // Matriz de caracteres para "GAME" e "OVER"
+    const char* game[] = {
+        "  GGG   AAA  M   M EEEEE  ",
+        " G     A   A MM MM E      ",
+        " G  GG AAAAA M M M EEEE   ",
+        " G   G A   A M   M E      ",
+        "  GGG  A   A M   M EEEEE  "
+    };
+
+    const char* over[] = {
+        " OOO  V   V EEEE RRR ",
+        "O   O V   V E    R  R",
+        "O   O V   V EEE  RRR ",
+        "O   O  V V  E    R R ",
+        " OOO    V   EEEE R  RR"
+    };
+
+    // Altura e largura das palavras "GAME" e "OVER"
+    int game_height = 5; // número de linhas na matriz "GAME"
+    int game_width = 25; // comprimento da linha mais longa na matriz "GAME"
+    int over_height = 5; // número de linhas na matriz "OVER"
+    int over_width = 25; // comprimento da linha mais longa na matriz "OVER"
+
+    // Desenha "GAME" na tela
+    draw_text(start_col, start_row, game, game_height, game_width, R, G, B);
+
+    // Desenha "OVER" na tela, começando logo após "GAME"
+    draw_text(start_col + game_width + 1, start_row + 10, over, over_height, over_width, R, G, B);
+}
+
+void draw_pause(int start_col, int start_row, unsigned long long R, unsigned long long G, unsigned long long B) {
+    // Matriz de caracteres para "PAUSE"
+    const char* pause[] = {
+        " PPPP AAAAA U   U SSSSS EEEEE",
+        " P  P A   A U   U S     E    ",
+        " PPPP AAAAA U   U SSSSS EEEEE",
+        " P    A   A U   U     S E    ",
+        " P    A   A UUUUU SSSSS EEEEE"
+    };
+
+    // Altura e largura das palavras "PAUSE"
+    int pause_height = 5; // número de linhas na matriz "PAUSE"
+    int pause_width = 29; // comprimento da linha mais longa na matriz "PAUSE"
+
+    // Desenha "PAUSE" na tela
+    draw_text(start_col, start_row, pause, pause_height, pause_width, R, G, B);
 }
 
 // Memória de sprites
@@ -1854,6 +1933,10 @@ void load_meteoros() {
     WSM(5, 357, 6, 7, 7);
     WSM(5, 358, 6, 7, 7);
     WSM(5, 359, 6, 7, 7);
+}
+
+void draw_mainmenu() {
+    WBM(1, 7, 7, 7);
 }
 
 void draw_ongame_background()
