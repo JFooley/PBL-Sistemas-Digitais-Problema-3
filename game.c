@@ -18,6 +18,7 @@
 #define MENU 0
 #define PLAYING 1
 #define PAUSE 2
+#define GAMEOVER 3
 
 game_state = MENU;
 
@@ -47,6 +48,8 @@ int dyAnterior = 0;
 int botaoEsquerdoAnterior = 0;
 int botaoDireitoAnterior = 0;
 int botaoMeioAnterior = 0;
+
+time_t current_time;
 
 typedef struct
 {
@@ -153,14 +156,21 @@ int main()
     ColiderBox meteoro2 = {rand() % 640, 0, 20, 1, 2, 4, 4};
     ColiderBox meteoro3 = {rand() % 640, 0, 20, 1, 3, 5, 5};
 
-    // Load visuais
+    // Clear previous
     clear_smemory();
+    limpar_sprites();
     limpa_background();
+
+    // Load visuais
     load_nave();
     load_tiro();
     load_meteoros();
 
-    // Adiciona o meteoro na lista;
+    // Draw first screen
+    WBR_BG(0, 0, 0);
+    draw_mainmenu();
+
+    // Adiciona o meteoro na lista
     asteroids[0] = meteoro1;
     asteroids[1] = meteoro2;
     asteroids[2] = meteoro3;
@@ -168,16 +178,13 @@ int main()
 
     int contador = 0;
 
-    limpa_background();
-    limpar_sprites();
-    WBR_BG(0, 0, 0);
-    draw_mainmenu();
-
     // Loop principal do programa
     while (1)
     {
         // Menu principal
         if (game_state == MENU){
+            draw_rbutton_blink();
+
             if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02)) {
                 game_state = PLAYING;
                 draw_ongame_background();
@@ -305,38 +312,37 @@ int main()
                 };
             }
 
-            contador++;
-            if (contador == 1000)
-            {
-                contador = 0;
-            }
-
             // Gameover  
             if (vida == 0) {
                 limpar_sprites();
-                limpa_background();
-                draw_gameover();
+                vida = valorMaxVida;
+                nave.pos_X = posicaoXCentral;
+                nave.on_screen = 1;
+                pontos = 0;
 
-                while (1)
+                int i;
+                for (i = 0; i < quantidadeMeteoros; i++)
                 {
-                    if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02))
-                    {
-                        sleep(1);
-                        vida = valorMaxVida;
-                        nave.pos_X = posicaoXCentral;
-                        nave.on_screen = 1;
-                        pontos = 0;
-
-                        int i;
-                        for (i = 0; i < quantidadeMeteoros; i++)
-                        {
-                            asteroids[i].pos_Y = 0;
-                            asteroids[i].on_screen = 1;
-                            asteroids[i].pos_X = rand() % 640;
-                        }
-                        break;
-                    }
+                    asteroids[i].pos_Y = 0;
+                    asteroids[i].on_screen = 1;
+                    asteroids[i].pos_X = rand() % 640;
                 }
+
+                game_state = GAMEOVER;
+                draw_gameover();
+            }
+        
+            contador++;
+            if (contador == 1000) {
+                contador = 0;
+            }
+        }
+
+        // Gameover
+        if (game_state == GAMEOVER) {
+            draw_rbutton_blink();
+            
+            if ((botaoDireito != botaoDireitoAnterior && botaoDireito & 0x02)) {
                 game_state = MENU;
                 draw_mainmenu();
             }

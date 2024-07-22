@@ -1,4 +1,5 @@
 // Dimensões da tela em blocos
+#include <time.h>
 #define BACKGROUND_WIDTH 80
 #define BACKGROUND_HEIGHT 60
 #define SCREEN_WIDTH 640
@@ -1938,12 +1939,23 @@ void load_meteoros() {
 
 
 // Draws fixos
-void draw_button_blink(int contador) {
-    WBM(3081, 7, 0, 0);
-    WBM(3161, 7, 0, 0);
-    WBM(3162, 7, 0, 0);
-    WBM(3241, 7, 0, 0);
-    WBM(3242, 7, 0, 0); 
+void draw_rbutton_blink() {
+    time_t current_time = time(NULL);
+
+    if (current_time % 2 == 0) {
+        WBM(3081, 7, 0, 0);
+        WBM(3161, 7, 0, 0);
+        WBM(3162, 7, 0, 0);
+        WBM(3241, 7, 0, 0);
+        WBM(3242, 7, 0, 0);
+    }
+    else {
+        WBM(3081, 6, 7, 7);
+        WBM(3161, 6, 7, 7);
+        WBM(3162, 6, 7, 7);
+        WBM(3241, 6, 7, 7);
+        WBM(3242, 6, 7, 7); 
+    }
 }
 
 void draw_earth_damage(int current_life) {
@@ -5062,6 +5074,7 @@ void draw_mainmenu() {
 }
 
 void draw_ongame_background() {
+    limpa_background();
     WBM(280, 6, 6, 7);
     WBM(335, 6, 6, 7);
     WBM(385, 6, 6, 7);
