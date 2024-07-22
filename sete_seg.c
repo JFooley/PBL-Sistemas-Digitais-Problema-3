@@ -74,9 +74,7 @@ int decodificar(int numero){
 
 }
 
-
-int ligar_7seg(int numero, int digito)
-{
+int set_display(int numero, int digito) {
  	volatile int * DISPLAY_ptr0; // virtual address pointer to red LEDs
     volatile int * DISPLAY_ptr1; // virtual address pointer to red LEDs
     volatile int * DISPLAY_ptr2; // virtual address pointer to red LEDs
@@ -175,10 +173,8 @@ void* map_p(int fd, unsigned int base, unsigned int span) {
 /* Close the previously-opened virtual address mapping */
 int unmap_p(void * virtual_base, unsigned int span) {
     if (munmap (virtual_base, span) != 0) {
-    printf ("ERROR: munmap() failed...\n");
-    return (-1);
-}
-
-return 0;
-
+        printf ("ERROR: munmap() failed...\n");
+        return (-1);
+    }
+    return 0;
 }

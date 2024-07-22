@@ -14,6 +14,9 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+// Endereço dos botões
+#define KEY_BASE 0x00000050
+
 // Estados do jogo
 #define MENU 0
 #define PLAYING 1
@@ -48,8 +51,6 @@ int dyAnterior = 0;
 int botaoEsquerdoAnterior = 0;
 int botaoDireitoAnterior = 0;
 int botaoMeioAnterior = 0;
-
-time_t current_time;
 
 typedef struct
 {
@@ -136,12 +137,17 @@ int check_colision(ColiderBox costant, ColiderBox optional)
 int main()
 {
     pthread_t threadMouse;
-    printf("VIda agora: %d", vida);
-    //Deixa um 0 no display de 7 seguimentos referente ao campo de dezena do campo da vida
-    ligar_7seg(vida, 0);
-    //Deixa um 0 no display de 7 seguimentos referente ao campo de dezena do campo da vida
-    ligar_7seg(10, 2);
-    ligar_7seg(10, 3);
+
+    printf("Vida: %d", vida);
+
+    // inicializa o display 7seg
+    set_display(vida, 0);
+    set_display(10, 1);
+    set_display(10, 2);
+    set_display(0, 3);
+    set_display(0, 4);
+    set_display(0, 5);
+
     // Criação da thread para monitorar o mouse
     if (pthread_create(&threadMouse, NULL, monitorarMouse, NULL))
     {
@@ -255,7 +261,7 @@ int main()
                         if (vida > 0 && asteroids[i].on_screen)
                         {
                             vida--;
-                            ligar_7seg(vida, 0);
+                            set_display(vida, 0);
                             draw_earth_damage(vida);
                         }
                         else if (vida == 0)
@@ -282,7 +288,7 @@ int main()
 
                     asteroids[i].on_screen = 0;
                     vida = 0;
-                    ligar_7seg(vida, 0);
+                    set_display(vida, 0);
                     // printf("vida: %d\n", vida);
                     printf("GAME OVER NAVE ATINGIDA\n");
                 };
@@ -292,29 +298,28 @@ int main()
                 {
                     asteroids[i].on_screen = 0;
                     asteroids[i].pos_Y = 0;
-
                     tiro.on_screen = 0;
                     ++pontos;
-                    printf("Pontos: %d", pontos);
 
                     if (pontos < 10){
-                        ligar_7seg(pontos, 4);
-                        printf("Menor que 10: %d\n", pontos);
+                        set_display(pontos, 3);
                     }
                     else{
                         int dig1;
                         int dig2;
+                        int dig3;
                         dig1 = pontos / 10;
                         dig2 = pontos % 10;
-                        ligar_7seg(dig1, 5);
-                        ligar_7seg(dig2, 4);
+                        dig3 = pontos / 100;
+                        set_display(dig3, 5);
+                        set_display(dig1, 4);
+                        set_display(dig2, 3);
                     }
                 };
             }
 
             // Gameover  
             if (vida == 0) {
-                limpar_sprites();
                 vida = valorMaxVida;
                 nave.pos_X = posicaoXCentral;
                 nave.on_screen = 1;
@@ -327,6 +332,15 @@ int main()
                     asteroids[i].on_screen = 1;
                     asteroids[i].pos_X = rand() % 640;
                 }
+
+                // Reseta o display e sprites
+                set_display(vida, 0);
+                set_display(10, 1);
+                set_display(10, 2);
+                set_display(0, 3);
+                set_display(0, 4);
+                set_display(0, 5);
+                limpar_sprites();
 
                 game_state = GAMEOVER;
                 draw_gameover();
