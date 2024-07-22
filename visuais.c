@@ -1938,6 +1938,14 @@ void load_meteoros() {
 
 
 // Draws fixos
+void draw_button_blink(int contador) {
+    WBM(3081, 7, 0, 0);
+    WBM(3161, 7, 0, 0);
+    WBM(3162, 7, 0, 0);
+    WBM(3241, 7, 0, 0);
+    WBM(3242, 7, 0, 0); 
+}
+
 void draw_earth_damage(int current_life) {
     if (current_life == 3) {
         WBM(4499, 7, 0, 0);
