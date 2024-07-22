@@ -6,7 +6,7 @@
 #include <pthread.h>
 #include "lib.c"
 #include "visuais.c"
-#include "sete_seg.c"
+#include "display.c"
 
 // Dimensões da tela em blocos
 #define BACKGROUND_WIDTH 80
