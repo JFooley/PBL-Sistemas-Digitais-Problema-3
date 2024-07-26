@@ -35,8 +35,13 @@ Diante disso, o Problema 3 da disciplina Sistemas Digitais traz um desafio: a co
 
 # 3. Resultados
 ## 3.1 Funcionamento do jogo, menus e etc.
+## 3.2 Desafios enfrentados
 
 # 4. Conclusão
-Com a conclusão do desenvolvimento, temos como resultado 
+Ao fim do desenvolvlimento do projeto podemos ter como resutlado um jogo simples e de facil interação que utiliza recursos de mapeamento de memória para acessar o hardware e é um exemplo de que é possivel desenvolver jogos mesmo em sistemas mais limitados. Vale ressaltar que os conhecimentos adiquiridos de como interagir com o hardware, interpretação dos Bits e etc em um nivel mais baixo são bem importantes mesmo para o desenvolvimento em alto nível. Entender como essas bases são feitos ajuda a utilizar elas de forma mais eficiente e muitas vezes escolher quais bibliotecas ou formas de interagir com esse hardware atendem mais suas necessidades, seja de praticidade ou desempenho.
+
+Com relação ao problema, cumprimos basicamente todos os requisitos: utilizando o mouse, botões e display da placa, com elementos ativos e passivos no jogo e sem utilziar nenhum outro recurso além dos presentes no kit. O kernel desenvolvido no problema anterior serviu perfeitamente sem problemas, necessitando apenas da edição de uma das instruções da biblioteca por motivos de comodidade devido a um problema na forma como as sprites funcionam que não havia sido detectado no problema anterior. Vale ressaltar que utilizamos alguns conceitos de desenvolvimento de jogos para construir nosso jogo, como o uso de maquina de estados, hitboxs colisoras, tratamento da entrada para capturar o click do botão (key down), etc.
+
+O resultado do jogo foi satisfatório mas há espaço para melhorias, principalmente na gameplay do jogo que é bastante simples. Uma melhoria que foi inclusive cogitada durante o desenvolvimento mas não entrou devido ao tempo de denvolvimento escasso foi a implementação de power ups que iriam surgir ao destuir meteoros e iriam conferir ao jogador algumas vantagens como recuperar a vida do planeta, um escudo que deixa a nave invulnerável por um tempo, novos tipos de disparos (multiplos, mais rápidos, etc), destruir todos os metoros na tela naquele momento e etc. Outra melhoria pensada seria representar os objetos utilizando mais de uma sprite (2x2 por exemplo) para que eles fiquem maior na tela e mais visíveis, já que o tamanho das sprites é bastante pequeno. Outra ideia seria um sistema de records, onde o jogo iria guardar a pontuação mais alta das partidas jogadas e mostrar uma indicação visual de que o record foi batido caso o jogador supere a ultima pontuação mais alta.
 
 # Referências
