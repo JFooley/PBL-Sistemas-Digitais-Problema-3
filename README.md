@@ -26,12 +26,17 @@ A partir dos anos 90, a industria de jogos cresceu de forma vertiginosa e hoje e
 Diante disso, o Problema 3 da disciplina Sistemas Digitais traz um desafio: a construção de um jogo eletrônico para sistema linux do Kit FPGA DE1-SoC que utilize a placa de vídeo em FPGA desenvolvida pelo aluno Gabriel Sá Barreto Alves em suas atividades de iniciação científica e em seu trabalho de conclusão de curso. Os requisitos do jogo são: utilizar novas sprites, controlar o ator pelo mouse, utilizar o display para mostrar a vida e pontuação, utilizar os botões da placa para ações do jogo. Vale ressaltar que esse problema é, de certa forma, uma continuação do problema 2, em que foi desenvolvido um modulo kernel que realize a interalção software-hardware com a GPU, ou seja, o jogo utiliza o kernel desenvolvido para controlar a GPU.
 
 # 2. Metodologia
-
+## 2.1 Conceito do jogo
+## 2.2 Representação dos elementos gráficos: sprites e backgrounds
+## 2.3 Acesso ao hardware: mouse, display e GPU
+## 2.4 Controle da nave e meteoros
+## 2.5 Colisão
+## 2.6 Vida, pontuação e dificuldade
 
 # 3. Resultados
-
+## 3.1 Funcionamento do jogo, menus e etc.
 
 # 4. Conclusão
-
+Com a conclusão do desenvolvimento, temos como resultado 
 
 # Referências
