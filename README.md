@@ -91,3 +91,5 @@ Com relação ao problema, cumprimos basicamente todos os requisitos: utilizando
 O resultado do jogo foi satisfatório mas há espaço para melhorias, principalmente na gameplay do jogo que é bastante simples. Uma melhoria que foi inclusive cogitada durante o desenvolvimento mas não entrou devido ao tempo de denvolvimento escasso foi a implementação de power ups que iriam surgir ao destuir meteoros e iriam conferir ao jogador algumas vantagens como recuperar a vida do planeta, um escudo que deixa a nave invulnerável por um tempo, novos tipos de disparos (multiplos, mais rápidos, etc), destruir todos os metoros na tela naquele momento e etc. Outra melhoria pensada seria representar os objetos utilizando mais de uma sprite (2x2 por exemplo) para que eles fiquem maior na tela e mais visíveis, já que o tamanho das sprites é bastante pequeno. Outra ideia seria um sistema de records, onde o jogo iria guardar a pontuação mais alta das partidas jogadas e mostrar uma indicação visual de que o record foi batido caso o jogador supere a ultima pontuação mais alta.
 
 # Referências
+
+Nenhum material externo foi utilizado, apenas os disponibilizados no problema 3.
