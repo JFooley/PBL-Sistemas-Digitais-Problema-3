@@ -57,6 +57,15 @@ O sistema de colisão implementado no código é crucial para a dinâmica do jog
 A verificação de colisão é realizada pela função check_colision, que compara as posições de duas ColiderBox para determinar se elas se sobrepõem. Esta função retorna 1 se houver colisão e 0 caso contrário. Este sistema de colisão é essencial para criar uma experiência de jogo envolvente, onde as ações do jogador têm consequências diretas e visíveis no jogo. Ele também adiciona um nível de desafio, exigindo que o jogador tenha reflexos rápidos e uma boa mira para destruir os meteoros e proteger a Terra.
 
 ## 2.5 Vida, pontuação e dificuldade
+No jogo, existem três estatísticas variáveis, todas diretamente influenciadas pelas ações do jogador.
+
+A primeira é a vida do planeta, que é inicialmente definida como 4. Esse valor inicial sofre um decaimento de 1 sempre que um meteoro atinge o solo, e quando chega a 0, o jogo entra em estado de “Game Over” e é finalizado. Vale ressaltar que, se a nave for atingida por algum meteoro, a vida do planeta é reduzida para 0 instantaneamente, também ocasionando o fim do jogo.
+
+A segunda estatística é a pontuação, que começa em 0 e aumenta em 1 a cada meteoro destruído.
+
+A terceira estatística é a dificuldade, que está diretamente ligada à pontuação. A cada 15 pontos marcados pelo jogador, a dificuldade aumenta. Esse aumento se reflete na velocidade com que os meteoros caem. Existem cinco níveis de velocidade (estagnando a partir dos 75 pontos). Existem três meteoros na tela e eles têm velocidades diferentes. Esse aumento de velocidade é feito controlando os pixels que um meteoro “pula” ao se locomover. A velocidade máxima foi limitada a 5, pois além desse ponto a velocidade dos meteoros fica muito alta, tornando o jogo quase injogável. Além disso, erros no sistema de colisão poderiam ocorrer, já que ao “pular” pixels, as coordenadas dos meteoros e dos disparos da nave podem ser “puladas”, resultando na não contabilização de pontos.
+
+Vale destacar que as estatísticas de vida e pontuação são exibidas em tempo real no display de 7 segmentos.
 
 # 3. Resultados
 ## 3.1 Funcionamento do jogo, menus e etc.
