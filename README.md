@@ -52,13 +52,9 @@ Reinicialização: Quando um meteoro atinge o final da tela, sua posição é re
 Estrutura dos Meteoros: Similar à nave, cada meteoro é representado por uma estrutura ColiderBox.
 
 ## 2.4 Colisão
-O sistema de colisão implementado no código é crucial para a dinâmica do jogo, garantindo que as interações entre a nave, os tiros e os meteoros sejam detectadas e tratadas de maneira adequada. Este sistema permite que o jogo responda às ações do jogador e aos eventos no ambiente de jogo de forma realista.
+O sistema de colisão implementado no código é crucial para a dinâmica do jogo, garantindo que as interações entre a nave, os tiros e os meteoros sejam detectadas e tratadas de maneira adequada. Este sistema permite que o jogo responda às ações do jogador e aos eventos no ambiente de jogo de forma realista. Para representar os objetos que podem colidir, como a nave, os tiros e os meteoros, é utilizada a estrutura ColiderBox. Cada ColiderBox contém informações sobre a posição, o tamanho e o estado na tela do objeto.
 
-Para representar os objetos que podem colidir, como a nave, os tiros e os meteoros, é utilizada a estrutura ColiderBox. Cada ColiderBox contém informações sobre a posição, o tamanho e o estado na tela do objeto.
-
-A verificação de colisão é realizada pela função check_colision, que compara as posições de duas ColiderBox para determinar se elas se sobrepõem. Esta função retorna 1 se houver colisão e 0 caso contrário.
-
-Este sistema de colisão é essencial para criar uma experiência de jogo envolvente, onde as ações do jogador têm consequências diretas e visíveis no jogo. Ele também adiciona um nível de desafio, exigindo que o jogador tenha reflexos rápidos e uma boa mira para destruir os meteoros e proteger a Terra.
+A verificação de colisão é realizada pela função check_colision, que compara as posições de duas ColiderBox para determinar se elas se sobrepõem. Esta função retorna 1 se houver colisão e 0 caso contrário. Este sistema de colisão é essencial para criar uma experiência de jogo envolvente, onde as ações do jogador têm consequências diretas e visíveis no jogo. Ele também adiciona um nível de desafio, exigindo que o jogador tenha reflexos rápidos e uma boa mira para destruir os meteoros e proteger a Terra.
 
 ## 2.5 Vida, pontuação e dificuldade
 
