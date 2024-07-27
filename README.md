@@ -39,7 +39,9 @@ Assim como no "Space Invaders" original, a simplicidade e a dinâmica do jogo co
 O controle da nave e dos meteoros é realizado de forma integrada através do uso de um dispositivo de entrada, no caso, um mouse, e da lógica de movimentação e colisão implementada.
 ### Controle da Nave
 Movimentação: A posição horizontal da nave é controlada pelo movimento do mouse. A variável mouse_pos_x é atualizada continuamente com base na leitura dos dados do mouse. A nave é posicionada na tela com base nesta variável.
+
 Limites da Tela: A posição da nave é limitada pela largura da tela (de 0 a 620 pixels) para garantir que ela não saia dos limites visíveis.
+
 Estrutura da Nave: A nave é representada por uma estrutura ColiderBox que armazena suas coordenadas, tamanho e outras propriedades.
 
 ## 2.4 Colisão
