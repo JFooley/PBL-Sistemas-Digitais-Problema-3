@@ -38,9 +38,9 @@ Assim como no "Space Invaders" original, a simplicidade e a dinâmica do jogo co
 ## 2.3 Controle da nave e meteoros
 O controle da nave e dos meteoros é realizado de forma integrada através do uso de um dispositivo de entrada, no caso, um mouse, e da lógica de movimentação e colisão implementada.
 ### Controle da Nave
-Movimentação: A posição horizontal da nave é controlada pelo movimento do mouse. A variável mouse_pos_x é atualizada continuamente com base na leitura dos dados do mouse. A nave é posicionada na tela com base nesta variável.
+Movimentação: A posição horizontal da nave é controlada pelo movimento do mouse. A variável mouse_pos_x é atualizada continuamente com base na leitura dos dados do mouse. A nave é posicionada na tela com base nesta variável. Além disso, pressionando o botão esquerdo do mouse o jogador realiza um disparo que surge imediatamente na posição acima da nave.
 
-Limites da Tela: A posição da nave é limitada pela largura da tela (de 0 a 620 pixels) para garantir que ela não saia dos limites visíveis.
+Limites da Tela: A posição da nave é limitada pela largura da tela (de 0 a 620 pixels) para garantir que ela não saia dos limites visíveis, o mesmo vale para os meteoros.
 
 Estrutura da Nave: A nave é representada por uma estrutura ColiderBox que armazena suas coordenadas, tamanho e outras propriedades.
 
@@ -54,7 +54,7 @@ Estrutura dos Meteoros: Similar à nave, cada meteoro é representado por uma es
 ## 2.4 Colisão
 O sistema de colisão implementado no código é crucial para a dinâmica do jogo, garantindo que as interações entre a nave, os tiros e os meteoros sejam detectadas e tratadas de maneira adequada. Este sistema permite que o jogo responda às ações do jogador e aos eventos no ambiente de jogo de forma realista. Para representar os objetos que podem colidir, como a nave, os tiros e os meteoros, é utilizada a estrutura ColiderBox. Cada ColiderBox contém informações sobre a posição, o tamanho e o estado na tela do objeto.
 
-A verificação de colisão é realizada pela função check_colision, que compara as posições de duas ColiderBox para determinar se elas se sobrepõem. Esta função retorna 1 se houver colisão e 0 caso contrário. Este sistema de colisão é essencial para criar uma experiência de jogo envolvente, onde as ações do jogador têm consequências diretas e visíveis no jogo. Ele também adiciona um nível de desafio, exigindo que o jogador tenha reflexos rápidos e uma boa mira para destruir os meteoros e proteger a Terra.
+A checagem da colisão funciona, basicamente, através da comparação das posições dos cantos da caixa no eixo X e Y das duas coliderbox. Se suas posições se sobreporem em ambos os eixos, significa que os dois objetos estão se sobrepondo, ou seja, estão colidindo. A função check_colider retorna 1 se houver colisão e 0 caso contrário. Este sistema de colisão é essencial para criar uma experiência de jogo envolvente, onde as ações do jogador têm consequências diretas e visíveis no jogo. Ele também adiciona um nível de desafio, exigindo que o jogador tenha reflexos rápidos e uma boa mira para destruir os meteoros e proteger a Terra.
 
 ## 2.5 Vida, pontuação e dificuldade
 No jogo, existem três estatísticas variáveis, todas diretamente influenciadas pelas ações do jogador.
