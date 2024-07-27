@@ -44,7 +44,7 @@ Limites da Tela: A posição da nave é limitada pela largura da tela (de 0 a 62
 
 Estrutura da Nave: A nave é representada por uma estrutura ColiderBox que armazena suas coordenadas, tamanho e outras propriedades.
 
-###Controle dos Meteoros
+### Controle dos Meteoros
 Movimentação: Os meteoros são movimentados verticalmente para baixo na tela. Cada meteoro possui uma velocidade de descida que pode aumentar com a pontuação do jogador.
 
 Reinicialização: Quando um meteoro atinge o final da tela, sua posição é reiniciada para o topo, em uma posição horizontal aleatória.
